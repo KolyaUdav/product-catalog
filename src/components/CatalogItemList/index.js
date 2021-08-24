@@ -1,11 +1,92 @@
-import React from 'react';
+import React, {Component} from 'react';
 import CatalogItem from '../CatalogItem';
 import './style.css';
 
-export default function CatalogItemList({items}) {
-    const itemElements = items.map(item =>
-        <li key={item.id} className={'col col-sm-4 catalog-item-list__li'}><CatalogItem item={item}/></li>
-    );
+class CatalogItemList extends Component {
 
-    return(<ul className={'row'}>{itemElements}</ul>);
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            error: null,
+            isLoaded: false,
+            items: [],
+            openCatalogItemId: null,
+            formIsOpen: true
+        }
+    }
+
+    componentDidMount() {
+        // сетевой запрос
+        fetch('http://localhost/product-catalog-back/api/getCatalogItemList.php')
+            .then(response => response.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        items: result.data
+                    });
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            );
+    }
+
+    render() {
+        const {error, isLoaded, items} = this.state;
+
+        if (error) {
+            return <div>Ошибка: {error.message}</div>
+        } else if (!isLoaded) {
+            return <div>Идёт загрузка...</div>
+        } else {
+            return (
+                <ul>
+                    <button onClick={this.handleOpenFormClick}
+                            className={'btn btn-success btn-sm mb-sm-3 mb-md-3'}>Добавить</button>
+                    {items.map(item => (
+                        <li key={item.id} className={'mb-md-3 mb-sm-3 catalog-item-list__li'}>
+                            <CatalogItem item={item} isOpen={this.state.openCatalogItemId === item.id}
+                                         onOpenButtonClick={this.handleOpenClick.bind(this, item.id)}
+                                         onDeleteButtonClick={this.handleRemoveClick.bind(this, item.id)}/>
+                        </li>))}
+                </ul>);
+        }
+    }
+
+    handleOpenClick = itemId => this.setState({
+        openCatalogItemId: this.state.openCatalogItemId === itemId ? null : itemId
+    })
+
+    handleRemoveClick = (itemId) => {
+        fetch('http://localhost/product-catalog-back/api/deleteSingleCatalogItem.php', {
+            method: 'POST',
+            body: JSON.stringify({
+                id: itemId
+            })
+        }).then((response) => {
+                this.setState({
+                    items: this.state.items.filter((item) => item.id !== itemId)
+                });
+                console.log(response.json());
+                alert('CatalogItem был удалён.');
+            },
+            (error) => {
+                alert(`Ошибка удаления: ${error.message}`);
+            }
+        );
+    }
+
+    handleOpenFormClick = () => {
+        this.setState({
+            formIsOpen: !this.state.formIsOpen
+        });
+    }
+
 }
+
+export default CatalogItemList;
