@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import CatalogItem from '../CatalogItem';
+import AddForm from '../AddForm';
 import './style.css';
 
 class CatalogItemList extends Component {
@@ -12,7 +13,7 @@ class CatalogItemList extends Component {
             isLoaded: false,
             items: [],
             openCatalogItemId: null,
-            formIsOpen: true
+            addFormIsOpen: false
         }
     }
 
@@ -37,7 +38,10 @@ class CatalogItemList extends Component {
     }
 
     render() {
-        const {error, isLoaded, items} = this.state;
+        const {error, isLoaded, items, addFormIsOpen} = this.state;
+
+        const catalogItemForm = addFormIsOpen ? <AddForm
+            onOpenCatalogItemForm={this.handleOpenAddFormClick.bind(this)} /> : null;
 
         if (error) {
             return <div>Ошибка: {error.message}</div>
@@ -45,22 +49,26 @@ class CatalogItemList extends Component {
             return <div>Идёт загрузка...</div>
         } else {
             return (
-                <ul>
-                    <button onClick={this.handleOpenFormClick}
-                            className={'btn btn-success btn-sm mb-sm-3 mb-md-3'}>Добавить</button>
-                    {items.map(item => (
-                        <li key={item.id} className={'mb-md-3 mb-sm-3 catalog-item-list__li'}>
-                            <CatalogItem item={item} isOpen={this.state.openCatalogItemId === item.id}
-                                         onOpenButtonClick={this.handleOpenClick.bind(this, item.id)}
-                                         onDeleteButtonClick={this.handleRemoveClick.bind(this, item.id)}/>
-                        </li>))}
-                </ul>);
+                <div>
+                    {catalogItemForm}
+
+                    <ul>
+                        <button onClick={this.handleOpenAddFormClick}
+                                className={'btn btn-success btn-sm mb-sm-3 mb-md-3'}>Добавить</button>
+                        {items.map(item => (
+                            <li key={item.id} className={'mb-md-3 mb-sm-3 catalog-item-list__li'}>
+                                <CatalogItem item={item} isOpen={this.state.openCatalogItemId === item.id}
+                                             onOpenButtonClick={this.handleOpenClick.bind(this, item.id)}
+                                             onDeleteButtonClick={this.handleRemoveClick.bind(this, item.id)}/>
+                            </li>))}
+                    </ul>
+                </div>);
         }
     }
 
     handleOpenClick = itemId => this.setState({
         openCatalogItemId: this.state.openCatalogItemId === itemId ? null : itemId
-    })
+    });
 
     handleRemoveClick = (itemId) => {
         fetch('http://localhost/product-catalog-back/api/deleteSingleCatalogItem.php', {
@@ -72,7 +80,6 @@ class CatalogItemList extends Component {
                 this.setState({
                     items: this.state.items.filter((item) => item.id !== itemId)
                 });
-                console.log(response.json());
                 alert('CatalogItem был удалён.');
             },
             (error) => {
@@ -81,9 +88,9 @@ class CatalogItemList extends Component {
         );
     }
 
-    handleOpenFormClick = () => {
+    handleOpenAddFormClick = () => {
         this.setState({
-            formIsOpen: !this.state.formIsOpen
+            addFormIsOpen: !this.state.addFormIsOpen
         });
     }
 
