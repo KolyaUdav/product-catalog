@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import CatalogItem from '../CatalogItem';
-import AddCatalogItemForm from '../AddCatalogItemForm';
-import AddCategoryForm from '../AddCategoryForm';
+import AddCatalogItemForm from '../forms/AddCatalogItemForm';
+import AddCategoryForm from '../forms/AddCategoryForm';
+import EditCatalogItemForm from "../forms/EditCatalogItemForm";
 import './style.css';
 
 class CatalogItemList extends Component {
@@ -16,6 +17,11 @@ class CatalogItemList extends Component {
             openCatalogItemId: null,
             addFormCatalogItemIsOpen: false,
             addFormCategoryIsOpen: false,
+            editFormCatalogItemIsOpen: false,
+            updId: '',
+            updTitle: '',
+            updBody: '',
+            updCategory: '',
         }
     }
 
@@ -40,13 +46,27 @@ class CatalogItemList extends Component {
     }
 
     render() {
-        const {error, isLoaded, items, addFormCatalogItemIsOpen, addFormCategoryIsOpen} = this.state;
+        const {
+            error,
+            isLoaded,
+            items,
+            addFormCatalogItemIsOpen,
+            addFormCategoryIsOpen,
+            editFormCatalogItemIsOpen,
+        } = this.state;
 
         const catalogItemForm = addFormCatalogItemIsOpen ? <AddCatalogItemForm
             onOpenCatalogItemForm={this.handleOpenAddCatalogItemFormClick.bind(this)} /> : null;
 
         const categoryItemForm = addFormCategoryIsOpen ? <AddCategoryForm
             onOpenCategoryForm={this.handleOpenAddCategoryFormClick.bind(this)} /> : null;
+
+        const editCatalogItemForm = editFormCatalogItemIsOpen ? <EditCatalogItemForm
+            onEditCatalogItemForm={this.handleOpenEditCatalogItemFormClick.bind(this)}
+            id={this.state.updId}
+            title={this.state.updTitle}
+            body={this.state.updBody}
+            categoryId={this.state.updCategory} /> : null;
 
         if (error) {
             return <div>Ошибка: {error.message}</div>
@@ -56,8 +76,8 @@ class CatalogItemList extends Component {
             return (
                 <div>
                     {catalogItemForm}
-
                     {categoryItemForm}
+                    {editCatalogItemForm}
 
                     <ul>
                         <button onClick={this.handleOpenAddCatalogItemFormClick}
@@ -108,13 +128,23 @@ class CatalogItemList extends Component {
 
     handleEditButtonClick = (itemId, itemTitle, itemBody, itemCategoryId) => {
         this.setState({
-            addFormCatalogItemIsOpen: !this.state.addFormCategoryIsOpen,
+            editFormCatalogItemIsOpen: !this.state.editFormCatalogItemIsOpen,
+            updId: itemId,
+            updTitle: itemTitle,
+            updBody: itemBody,
+            updCategory: itemCategoryId,
         });
     }
 
     handleOpenAddCatalogItemFormClick = () => {
         this.setState({
             addFormCatalogItemIsOpen: !this.state.addFormCatalogItemIsOpen,
+        });
+    }
+
+    handleOpenEditCatalogItemFormClick = () => {
+        this.setState({
+            editFormCatalogItemIsOpen: !this.state.editFormCatalogItemIsOpen,
         });
     }
 

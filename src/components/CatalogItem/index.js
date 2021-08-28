@@ -34,6 +34,12 @@ class CatalogItem extends Component {
                                 Удалить
                             </button>
                         </div>
+                        <div>
+                            <button onClick={onEditButtonClick}
+                                    className={'catalog-item__btn btn btn-success btn-sm ms-sm-2 mt-sm-3 float-end'}>
+                                Редактировать
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

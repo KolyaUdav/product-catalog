@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import './style.css';
+import '../style.css';
 
-class AddCatalogItemForm extends Component {
+class EditCatalogItemForm extends Component {
     constructor(props) {
         super(props);
 
@@ -9,6 +9,7 @@ class AddCatalogItemForm extends Component {
             categories: [],
             error: null,
             isLoaded: false,
+            id: '',
             title: '',
             body: '',
             category: 1,
@@ -16,6 +17,17 @@ class AddCatalogItemForm extends Component {
     }
 
     componentDidMount() {
+        const {id, title, body, categoryId} = this.props;
+
+        /* Передаём в state текущий catalogItem для дальнейшей работы в форме */
+        this.setState({
+            id: id,
+            title: title,
+            body: body,
+            category: categoryId,
+            categories: [],
+        });
+
         fetch('http://localhost/product-catalog-back/api/getCategoryList.php')
             .then(response => response.json())
             .then((result) => {
@@ -44,7 +56,10 @@ class AddCatalogItemForm extends Component {
     render() {
         const {categories, error, isLoaded} = this.state;
 
-        const {onOpenCatalogItemForm} = this.props;
+        /**
+         * Отвечает за сокрытие/демонстрацию формы
+         * */
+        const {onEditCatalogItemForm} = this.props;
 
         if (error) {
             return <div>Ошибка: {error.message}</div>
@@ -57,7 +72,7 @@ class AddCatalogItemForm extends Component {
                     <div className={'add-form__div'}>
                         <div>
                             <button className={'btn btn-danger btn-sm float-end mb-sm-3 mb-md-3'}
-                                    onClick={onOpenCatalogItemForm}>X</button>
+                                    onClick={onEditCatalogItemForm}>X</button>
                         </div>
                         <form onSubmit={this.handleSubmit}>
                             <div className={'mb-3'}>
@@ -92,9 +107,11 @@ class AddCatalogItemForm extends Component {
         }
     }
 
+    /* Обработка поступивших из формы данных, отправка на сервер */
     handleSubmit = event => {
         event.preventDefault();
 
+        const idVal = this.state.id;
         const titleVal = this.state.title;
         const bodyVal = this.state.body;
         const categoryVal = this.state.category;
@@ -114,13 +131,15 @@ class AddCatalogItemForm extends Component {
             return;
         }
 
+        /* Объект для отправки на сервер */
         const catalogItem = {
+            id: idVal,
             title: titleVal,
             body: bodyVal,
             category_id: categoryVal
         };
 
-        fetch('http://localhost/product-catalog-back/api/createSingleCatalogItem.php',
+        fetch('http://localhost/product-catalog-back/api/updateSingleCatalogItem.php',
             {
                 method: 'POST',
                 body: JSON.stringify(catalogItem)
@@ -128,7 +147,7 @@ class AddCatalogItemForm extends Component {
             .then(
                 (response) => {
                     if (response.ok) {
-                        alert('Новый CatalogItem добавлен.');
+                        alert('CatalogItem обновлён.');
                         window.location.reload();
                     }
 
@@ -141,4 +160,4 @@ class AddCatalogItemForm extends Component {
 
 }
 
-export default AddCatalogItemForm;
+export default EditCatalogItemForm;
