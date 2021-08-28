@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './style.css';
 
-class AddForm extends Component {
+class AddCatalogItemForm extends Component {
     constructor(props) {
         super(props);
 
@@ -55,11 +55,11 @@ class AddForm extends Component {
                 <div>
                     <div className={'hover__div'} />
                     <div className={'add-form__div'}>
+                        <div>
+                            <button className={'btn btn-danger btn-sm float-end mb-sm-3 mb-md-3'}
+                                    onClick={onOpenCatalogItemForm}>X</button>
+                        </div>
                         <form onSubmit={this.handleSubmit}>
-                            <div>
-                                <button className={'btn btn-danger btn-sm float-end mb-sm-3 mb-md-3'}
-                                        onClick={onOpenCatalogItemForm}>X</button>
-                            </div>
                             <div className={'mb-3'}>
                                 <label htmlFor={'title'} className={'form-label'}>Название</label>
                                 <input type={'text'} className={'form-control'} id={'title'}
@@ -83,7 +83,8 @@ class AddForm extends Component {
                                     }
                                 </select>
                             </div>
-                            <input type={'submit'} value={'Отправить'} className={'btn btn-success btn-sm mt-md-3 mt-sm-3'} />
+                            <input type={'submit'} value={'Отправить'}
+                                   className={'btn btn-success btn-sm mt-md-3 mt-sm-3'} />
                         </form>
                     </div>
                 </div>
@@ -92,6 +93,7 @@ class AddForm extends Component {
     }
 
     handleSubmit = event => {
+        console.log('handleSumbit');
         event.preventDefault();
 
         const titleVal = this.state.title;
@@ -126,8 +128,11 @@ class AddForm extends Component {
             })
             .then(
                 (response) => {
-                    alert('Новый CatalogItem добавлен.');
-                    //this.state.openCatalogItemForm.call();
+                    if (response.ok) {
+                        alert('Новый CatalogItem добавлен.');
+                        window.location.reload();
+                    }
+
                 },
                 (error) => {
                     return <div>Ошибка: {error.message}</div>
@@ -137,4 +142,4 @@ class AddForm extends Component {
 
 }
 
-export default AddForm;
+export default AddCatalogItemForm;

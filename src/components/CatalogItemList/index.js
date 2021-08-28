@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import CatalogItem from '../CatalogItem';
-import AddForm from '../AddForm';
+import AddCatalogItemForm from '../AddCatalogItemForm';
+import AddCategoryForm from '../AddCategoryForm';
 import './style.css';
 
 class CatalogItemList extends Component {
@@ -13,7 +14,8 @@ class CatalogItemList extends Component {
             isLoaded: false,
             items: [],
             openCatalogItemId: null,
-            addFormIsOpen: false
+            addFormCatalogItemIsOpen: false,
+            addFormCategoryIsOpen: false,
         }
     }
 
@@ -38,10 +40,13 @@ class CatalogItemList extends Component {
     }
 
     render() {
-        const {error, isLoaded, items, addFormIsOpen} = this.state;
+        const {error, isLoaded, items, addFormCatalogItemIsOpen, addFormCategoryIsOpen} = this.state;
 
-        const catalogItemForm = addFormIsOpen ? <AddForm
-            onOpenCatalogItemForm={this.handleOpenAddFormClick.bind(this)} /> : null;
+        const catalogItemForm = addFormCatalogItemIsOpen ? <AddCatalogItemForm
+            onOpenCatalogItemForm={this.handleOpenAddCatalogItemFormClick.bind(this)} /> : null;
+
+        const categoryItemForm = addFormCategoryIsOpen ? <AddCategoryForm
+            onOpenCategoryForm={this.handleOpenAddCategoryFormClick.bind(this)} /> : null;
 
         if (error) {
             return <div>Ошибка: {error.message}</div>
@@ -52,15 +57,23 @@ class CatalogItemList extends Component {
                 <div>
                     {catalogItemForm}
 
+                    {categoryItemForm}
+
                     <ul>
-                        <button onClick={this.handleOpenAddFormClick}
-                                className={'btn btn-success btn-sm mb-sm-3 mb-md-3'}>Добавить</button>
+                        <button onClick={this.handleOpenAddCatalogItemFormClick}
+                                className={'btn btn-success btn-sm mb-sm-3 mb-md-3'}>Добавить CatalogItem
+                        </button>
+                        <button onClick={this.handleOpenAddCategoryFormClick}
+                                className={'btn btn-success btn-sm mb-sm-3 mb-md-3 ms-md-3 ms-sm-3'}>
+                            Добавить Category
+                        </button>
                         {items.map(item => (
                             <li key={item.id} className={'mb-md-3 mb-sm-3 catalog-item-list__li'}>
                                 <CatalogItem item={item} isOpen={this.state.openCatalogItemId === item.id}
                                              onOpenButtonClick={this.handleOpenClick.bind(this, item.id)}
                                              onDeleteButtonClick={this.handleRemoveClick.bind(this, item.id)}/>
-                            </li>))}
+                            </li>))
+                        }
                     </ul>
                 </div>);
         }
@@ -88,9 +101,15 @@ class CatalogItemList extends Component {
         );
     }
 
-    handleOpenAddFormClick = () => {
+    handleOpenAddCatalogItemFormClick = () => {
         this.setState({
-            addFormIsOpen: !this.state.addFormIsOpen
+            addFormCatalogItemIsOpen: !this.state.addFormCatalogItemIsOpen
+        });
+    }
+
+    handleOpenAddCategoryFormClick = () => {
+        this.setState({
+            addFormCategoryIsOpen: !this.state.addFormCategoryIsOpen
         });
     }
 
