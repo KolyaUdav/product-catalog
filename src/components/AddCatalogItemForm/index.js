@@ -11,7 +11,7 @@ class AddCatalogItemForm extends Component {
             isLoaded: false,
             title: '',
             body: '',
-            category: '',
+            category: 1,
         }
     }
 
@@ -93,7 +93,6 @@ class AddCatalogItemForm extends Component {
     }
 
     handleSubmit = event => {
-        console.log('handleSumbit');
         event.preventDefault();
 
         const titleVal = this.state.title;
@@ -110,7 +109,7 @@ class AddCatalogItemForm extends Component {
             return;
         }
 
-        if (categoryVal.trim() === '') {
+        if (categoryVal.toString().trim() === '') {
             alert('Не выбрана категория');
             return;
         }

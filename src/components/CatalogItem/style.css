@@ -1,0 +1,8 @@
+.catalog-item__btn {
+    width: 8rem;
+    margin-right: 1rem;
+}
+
+.catalog-item__btn:last-of-type {
+    margin-bottom: 1rem;
+}

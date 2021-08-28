@@ -61,7 +61,8 @@ class CatalogItemList extends Component {
 
                     <ul>
                         <button onClick={this.handleOpenAddCatalogItemFormClick}
-                                className={'btn btn-success btn-sm mb-sm-3 mb-md-3'}>Добавить CatalogItem
+                                className={'btn btn-success btn-sm mb-sm-3 mb-md-3'}>
+                            Добавить CatalogItem
                         </button>
                         <button onClick={this.handleOpenAddCategoryFormClick}
                                 className={'btn btn-success btn-sm mb-sm-3 mb-md-3 ms-md-3 ms-sm-3'}>
@@ -71,7 +72,11 @@ class CatalogItemList extends Component {
                             <li key={item.id} className={'mb-md-3 mb-sm-3 catalog-item-list__li'}>
                                 <CatalogItem item={item} isOpen={this.state.openCatalogItemId === item.id}
                                              onOpenButtonClick={this.handleOpenClick.bind(this, item.id)}
-                                             onDeleteButtonClick={this.handleRemoveClick.bind(this, item.id)}/>
+                                             onDeleteButtonClick={this.handleRemoveClick.bind(this, item.id)}
+                                             onEditButtonClick={
+                                                 this.handleEditButtonClick.bind(this, item.id, item.title, item.body,
+                                                     item.category_id)
+                                             }/>
                             </li>))
                         }
                     </ul>
@@ -79,7 +84,7 @@ class CatalogItemList extends Component {
         }
     }
 
-    handleOpenClick = itemId => this.setState({
+    handleOpenClick = (itemId) => this.setState({
         openCatalogItemId: this.state.openCatalogItemId === itemId ? null : itemId
     });
 
@@ -101,9 +106,15 @@ class CatalogItemList extends Component {
         );
     }
 
+    handleEditButtonClick = (itemId, itemTitle, itemBody, itemCategoryId) => {
+        this.setState({
+            addFormCatalogItemIsOpen: !this.state.addFormCategoryIsOpen,
+        });
+    }
+
     handleOpenAddCatalogItemFormClick = () => {
         this.setState({
-            addFormCatalogItemIsOpen: !this.state.addFormCatalogItemIsOpen
+            addFormCatalogItemIsOpen: !this.state.addFormCatalogItemIsOpen,
         });
     }
 
