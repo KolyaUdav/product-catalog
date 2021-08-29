@@ -16,7 +16,7 @@ class CatalogItemList extends Component {
             items: [],
             openCatalogItemId: null,
             addFormCatalogItemIsOpen: false,
-            addFormCategoryIsOpen: false,
+            /*addFormCategoryIsOpen: false,*/
             editFormCatalogItemIsOpen: false,
             updId: '',
             updTitle: '',
@@ -51,15 +51,15 @@ class CatalogItemList extends Component {
             isLoaded,
             items,
             addFormCatalogItemIsOpen,
-            addFormCategoryIsOpen,
+            /*addFormCategoryIsOpen,*/
             editFormCatalogItemIsOpen,
         } = this.state;
 
         const catalogItemForm = addFormCatalogItemIsOpen ? <AddCatalogItemForm
             onOpenCatalogItemForm={this.handleOpenAddCatalogItemFormClick.bind(this)} /> : null;
 
-        const categoryItemForm = addFormCategoryIsOpen ? <AddCategoryForm
-            onOpenCategoryForm={this.handleOpenAddCategoryFormClick.bind(this)} /> : null;
+        /*const categoryItemForm = addFormCategoryIsOpen ? <AddCategoryForm
+            onOpenCategoryForm={this.handleOpenAddCategoryFormClick.bind(this)} /> : null;*/
 
         const editCatalogItemForm = editFormCatalogItemIsOpen ? <EditCatalogItemForm
             onEditCatalogItemForm={this.handleOpenEditCatalogItemFormClick.bind(this)}
@@ -76,17 +76,12 @@ class CatalogItemList extends Component {
             return (
                 <div>
                     {catalogItemForm}
-                    {categoryItemForm}
                     {editCatalogItemForm}
 
                     <ul>
                         <button onClick={this.handleOpenAddCatalogItemFormClick}
                                 className={'btn btn-success btn-sm mb-sm-3 mb-md-3'}>
                             Добавить CatalogItem
-                        </button>
-                        <button onClick={this.handleOpenAddCategoryFormClick}
-                                className={'btn btn-success btn-sm mb-sm-3 mb-md-3 ms-md-3 ms-sm-3'}>
-                            Добавить Category
                         </button>
                         {items.map(item => (
                             <li key={item.id} className={'mb-md-3 mb-sm-3 catalog-item-list__li'}>
@@ -145,12 +140,6 @@ class CatalogItemList extends Component {
     handleOpenEditCatalogItemFormClick = () => {
         this.setState({
             editFormCatalogItemIsOpen: !this.state.editFormCatalogItemIsOpen,
-        });
-    }
-
-    handleOpenAddCategoryFormClick = () => {
-        this.setState({
-            addFormCategoryIsOpen: !this.state.addFormCategoryIsOpen
         });
     }
 

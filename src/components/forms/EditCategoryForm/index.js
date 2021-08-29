@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import '../style.css';
 
-class AddCategoryForm extends Component {
+class EditCategoryForm extends Component {
     constructor(props) {
         super(props);
 
+        const {categoryId, categoryName} = props;
+
         this.state = {
-            error: null,
-            isLoaded: false,
-            name: '',
-        }
+            categoryId: categoryId,
+            categoryName: categoryName,
+        };
     }
 
     handleInputChange(event) {
@@ -23,7 +24,7 @@ class AddCategoryForm extends Component {
     }
 
     render() {
-        const {onOpenCategoryForm} = this.props;
+        const {onEditCategoryForm} = this.props;
 
         return (
             <div>
@@ -31,13 +32,13 @@ class AddCategoryForm extends Component {
                 <div className={'add-form__div'}>
                     <div>
                         <button className={'btn btn-danger btn-sm float-end mb-sm-3 mb-md-3'}
-                                onClick={onOpenCategoryForm}>X</button>
+                                onClick={onEditCategoryForm}>X</button>
                     </div>
                     <form onSubmit={this.handleSubmit}>
                         <div className={'mb-3'}>
                             <label htmlFor={'title'} className={'form-label'}>Название</label>
-                            <input type={'text'} className={'form-control'} id={'name'}
-                                   placeholder={'Введите название'} value={this.state.name}
+                            <input type={'text'} className={'form-control'} id={'categoryName'}
+                                   placeholder={'Введите название'} value={this.state.categoryName}
                                    onChange={this.handleInputChange.bind(this)} />
                         </div>
                         <input type={'submit'} value={'Отправить'}
@@ -48,21 +49,22 @@ class AddCategoryForm extends Component {
         );
     }
 
-    handleSubmit = event => {
+    handleSubmit = (event) => {
         event.preventDefault();
 
-        const nameVal = this.state.name;
+        const {categoryId, categoryName} = this.state;
 
-        if (nameVal.trim() === '') {
+        if (categoryName.trim() === '') {
             alert('Пустой заголовок');
             return;
         }
 
         const category = {
-            name: nameVal,
+            id: categoryId,
+            name: categoryName,
         };
 
-        fetch('http://localhost/product-catalog-back/api/createCategory.php',
+        fetch('http://localhost/product-catalog-back/api/updateCategory.php',
             {
                 method: 'POST',
                 body: JSON.stringify(category)
@@ -70,7 +72,7 @@ class AddCategoryForm extends Component {
             .then(
                 (response) => {
                     if (response.ok) {
-                        alert('Новый Category добавлен.');
+                        alert('Имя категории изменено.');
                         window.location.reload();
                     }
 
@@ -83,4 +85,4 @@ class AddCategoryForm extends Component {
 
 }
 
-export default AddCategoryForm;
+export default EditCategoryForm;
